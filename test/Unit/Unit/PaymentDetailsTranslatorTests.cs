@@ -56,13 +56,12 @@ namespace Unit {
         }
 
 
-        [TestCase(TransactionStatus.Unknown, false)]
-        [TestCase(TransactionStatus.Failed, false)]
-        [TestCase(TransactionStatus.Success, true)]
-        public void CanTranslate_FromTransactionResponse_Success(TransactionStatus status, bool expectedSuccess) {
+        [TestCase(TransactionStatusCodes.Failed, false)]
+        [TestCase(TransactionStatusCodes.Success, true)]
+        public void CanTranslate_FromTransactionResponse_Success(string statusCode, bool expectedSuccess) {
         
             // Given
-            var transactionResponse = new TransactionResponse { TransactionId = Guid.NewGuid().ToString(), Status = status };
+            var transactionResponse = new TransactionResponse { TransactionId = Guid.NewGuid().ToString(), StatusCode = statusCode };
 
             // When
             var bankTransaction = translator.FromTransactionResponse(transactionResponse);

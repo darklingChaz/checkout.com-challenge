@@ -3,11 +3,13 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Auth;
 using PaymentGateway.Exceptions;
+using PaymentGateway.Models;
 using PaymentGateway.Models.Auth;
 using PaymentGateway.Models.Payment;
 using PaymentGateway.Services;
@@ -27,12 +29,13 @@ namespace PaymentGateway.Controllers
 
         private readonly ICredentialTokenManager credentialTokenManager;
         private readonly IPaymentProcessorService paymentProcessorService;
+        private readonly ITransactionCache transactionCache;
 
-
-        public PaymentController(ICredentialTokenManager credentialTokenManager, IPaymentProcessorService paymentProcessorService)
+        public PaymentController(ICredentialTokenManager credentialTokenManager, IPaymentProcessorService paymentProcessorService, ITransactionCache cache)
         {
             this.credentialTokenManager = credentialTokenManager;
             this.paymentProcessorService = paymentProcessorService;
+            this.transactionCache = cache;
         }
 
 
@@ -72,6 +75,33 @@ namespace PaymentGateway.Controllers
                 return Ok(transaction);
             }
             catch (Exception e) when (e is PaymentDetailsInvalidException || e is CreditCardNumberInvalidException)
+            {
+                return StatusCode(400, e);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+
+        }
+
+
+        
+        [Authorize]
+        [HttpGet("history/{transactionId}")]
+        [SwaggerOperation("Get previous transaction details", "Get previous transaction details")]
+        [SwaggerOperationFilter(typeof(CustomTokenSwaggerOperationFilter))]
+        [SwaggerResponse(200, "OK", typeof(PaymentHistory))]
+        [SwaggerResponse(404, "BadRequest - Transaction Id not found", typeof(ProblemDetails))]
+        [SwaggerResponse(500, "Internal Server Error", typeof(ProblemDetails))]
+        public async Task<IActionResult> History(string transactionId)
+        {
+
+            try
+            {
+                return Ok(await transactionCache.GetPaymentHistory(transactionId));
+            }
+            catch (Exception e) when (e is KeyNotFoundException || e is ArgumentException)
             {
                 return StatusCode(400, e);
             }

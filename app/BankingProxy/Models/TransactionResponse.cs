@@ -9,7 +9,7 @@ namespace BankingProxy.Models
 
         public string TransactionId { get; set; }
         
-        public TransactionStatus Status { get; set; }
+        public string StatusCode { get; set; }
 
     }
 

@@ -29,12 +29,20 @@ namespace PaymentGateway.Services {
         private readonly IValidate<PaymentDetails> paymentDetailsValidator;
         private readonly IBankProxy bankProxy;
         private readonly IBankProxyTranslator translator;
+        private readonly ITransactionCache transactionCache;
 
-        public PaymentProcessorService(IValidate<PaymentDetails> paymentDetailsValidator, IBankProxy bankProxy, IBankProxyTranslator translator, ILogger<IPaymentProcessorService> logger)
+        public PaymentProcessorService(
+                IValidate<PaymentDetails> paymentDetailsValidator, 
+                IBankProxy bankProxy,
+                IBankProxyTranslator translator, 
+                ITransactionCache transactionCache, 
+                ILogger<IPaymentProcessorService> logger
+            )
         {
             this.paymentDetailsValidator = paymentDetailsValidator;
             this.bankProxy = bankProxy;
             this.translator = translator;
+            this.transactionCache = transactionCache;
             this.logger = logger;
         }
 
@@ -51,7 +59,10 @@ namespace PaymentGateway.Services {
 
                 var transactionResponse = await bankProxy.ActionPaymentAsync(cardDetails, transactionDetails);
 
-                return translator.FromTransactionResponse(transactionResponse);
+                var bankResponse = translator.FromTransactionResponse(transactionResponse);
+                await transactionCache.Add(bankResponse, paymentDetails.ToMasked()); // Mask before caching
+
+                return bankResponse;
 
             } catch(Exception e) {
 
