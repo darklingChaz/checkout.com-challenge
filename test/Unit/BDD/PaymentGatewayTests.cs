@@ -201,6 +201,35 @@ namespace Unit.BDD
         }
 
 
+
+
+        [Test]
+        public async Task CanSubmitManyRequests() {
+        
+            // Given
+            var authToken = await paymentGatewayHelper.GetAuthToken(validCreds[0]);
+
+            var transactionIds = new List<string>();
+            var submit = new Func<string,Task<string>>(async authToken => {
+                
+                var paymentDetails = PaymentDetailsGenerator.GetValidDetails();
+                var transactionResponse = await paymentGatewayHelper.SubmitPayment(paymentDetails, authToken);
+                return transactionResponse.TransactionId;
+                
+            } );
+
+            for (int i = 0; i < 40; i++)
+                transactionIds.Add(await submit(authToken.Token));
+
+            // Then
+            foreach (var id in transactionIds){
+                var hist = await paymentGatewayHelper.GetPaymentHistory(id, authToken.Token);
+                Assert.AreEqual(id, hist.TransactionResponse.TransactionId);
+                Console.WriteLine($"${hist.TransactionResponse.TransactionId} | ${hist.TransactionResponse.StatusCode}");
+            }
+        }
+
+
     }
 
 }
