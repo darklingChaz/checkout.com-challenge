@@ -43,6 +43,7 @@ namespace PaymentGateway.Controllers
         [SwaggerOperation("Get auth token", "Get auth session token")]
         [SwaggerResponse(200, "OK", typeof(AuthToken))]
         [SwaggerResponse(401, "Unauthorized", typeof(ProblemDetails))]
+        [SwaggerResponse(500, "Internal Server Error", typeof(ProblemDetails))]
         public IActionResult GetAuthToken([FromBody] AuthCredentials credentials)
         {
 
@@ -58,8 +59,10 @@ namespace PaymentGateway.Controllers
         [Authorize]
         [HttpPost("submit")]
         [SwaggerOperation("Submit a payment", "Submit a payment")]
+        [SwaggerOperationFilter(typeof(CustomTokenSwaggerOperationFilter))]
         [SwaggerResponse(200, "OK", typeof(BankTransactionResponse))]
-        [SwaggerResponse(401, "Unauthorized - Auth token not supplied", typeof(ProblemDetails))]
+        [SwaggerResponse(400, "BadRequest - PaymentDetails not valid", typeof(ProblemDetails))]
+        [SwaggerResponse(500, "Internal Server Error", typeof(ProblemDetails))]
         public async Task<IActionResult> SubmitPayment([FromBody] PaymentDetails paymentDetails)
         {
 
@@ -67,16 +70,10 @@ namespace PaymentGateway.Controllers
             {
                 var transaction = await paymentProcessorService.Process(paymentDetails);
                 return Ok(transaction);
-
             }
-            catch (Exception e)
-               when (e is PaymentDetailsInvalidException
-                      || e is CreditCardNumberInvalidException
-                  )
+            catch (Exception e) when (e is PaymentDetailsInvalidException || e is CreditCardNumberInvalidException)
             {
-
                 return StatusCode(400, e);
-
             }
             catch (Exception e)
             {
@@ -85,12 +82,6 @@ namespace PaymentGateway.Controllers
 
         }
 
-
-        [Authorize]
-        [HttpGet("check")]
-        public IActionResult CheckMe() {
-            return Ok();
-        }
 
     }
 

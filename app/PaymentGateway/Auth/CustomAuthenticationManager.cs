@@ -35,14 +35,11 @@ namespace PaymentGateway.Auth {
             : base(options, logger, encoder, clock)
         {
             this.tokenManager = customAuthenticationManager;
-            Console.WriteLine(" ############################################################       CREATING AUTH");
 
         }
  
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-
-            Console.WriteLine(" ############################################################       CHECKING AUTH");
 
             if (!Request.Headers.ContainsKey("Authorization"))
                 return await Task.FromResult(AuthenticateResult.Fail("Unauthorized | Auth token not supplied"));  // single await to remove warn

@@ -3,6 +3,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -57,14 +58,15 @@ namespace Unit.BDD
 
         }
 
-        internal async Task<AuthToken> GetAuthToken(AuthCredentials authCreds)
+        public async Task<AuthToken> GetAuthToken(AuthCredentials authCreds)
         {
             return await ExecuteHttpRequest<AuthCredentials, AuthToken>(HttpMethod.Post, AuthTokenUrl, authCreds);
         }
 
-        internal Task SubmitPayment(PaymentDetails paymentDetails, object p)
+        public async Task<BankTransactionResponse> SubmitPayment(PaymentDetails paymentDetails, string authToken)
         {
-            throw new NotImplementedException();
+            var headers = new Dictionary<string,string>().WithHeader("Authorization", authToken);
+            return await ExecuteHttpRequest<PaymentDetails, BankTransactionResponse>(HttpMethod.Post, PaymentUrl, paymentDetails, headers);
         }
     }
 

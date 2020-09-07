@@ -4,12 +4,18 @@
 
 
 
-namespace PaymentGateway.Models.Payment {
+using Swashbuckle.AspNetCore.Annotations;
 
+namespace PaymentGateway.Models.Payment
+{
 
-    public class BankTransactionResponse {
+    [SwaggerTag("Transaction response")]
+    public class BankTransactionResponse
+    {
 
-        
+        public string TransactionId { get; set; }
+        public bool WasSuccess { get; set; }
+
     }
 
 }

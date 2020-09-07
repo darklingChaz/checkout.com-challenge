@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+      <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.1.1" />
       <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
@@ -15,6 +16,11 @@
       <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.1.2" />
       <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BankingProxy\BankingProxy.csproj" />
+    <ProjectReference Include="..\MockBank\MockBank.csproj" />
   </ItemGroup>
 
 </Project>

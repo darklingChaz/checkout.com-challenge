@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.2" />
+    <PackageReference Include="Moq" Version="4.14.5" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
@@ -15,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\app\PaymentGateway\PaymentGateway.csproj" />
+    <ProjectReference Include="..\..\app\BankingProxy\BankingProxy.csproj" />
+    <ProjectReference Include="..\..\app\MockBank\MockBank.csproj" />
   </ItemGroup>
 
 </Project>

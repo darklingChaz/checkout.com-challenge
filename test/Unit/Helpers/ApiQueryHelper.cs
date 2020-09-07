@@ -30,6 +30,10 @@ namespace Unit.Helpers
         }
 
 
+
+
+
+
         public async Task<string> ExecuteHttpRequestReturnJson(HttpMethod method, string path)
         {
             return await ExecuteHttpRequestActualReturnString(method, path);
@@ -47,18 +51,18 @@ namespace Unit.Helpers
         }
 
 
-        public async Task<string> ExecuteHttpRequestReturnJson<TIn>(HttpMethod method, string path, TIn body)
+        public async Task<string> ExecuteHttpRequestReturnJson<TIn>(HttpMethod method, string path, TIn body, IDictionary<string, string> headers = null)
             where TIn : class
         {
             var requestJson = JsonConvert.SerializeObject(body);
-            return await ExecuteHttpRequestActualReturnString(method, path, requestJson);
+            return await ExecuteHttpRequestActualReturnString(method, path, requestJson, headers);
         }
 
-        public async Task<TOut> ExecuteHttpRequest<TIn, TOut>(HttpMethod method, string path, TIn body)
+        public async Task<TOut> ExecuteHttpRequest<TIn, TOut>(HttpMethod method, string path, TIn body, IDictionary<string, string> headers = null)
             where TIn : class
             where TOut : class
         {
-            var responseJson = await ExecuteHttpRequestReturnJson<TIn>(method, path, body);
+            var responseJson = await ExecuteHttpRequestReturnJson<TIn>(method, path, body, headers);
             return JsonConvert.DeserializeObject<TOut>(responseJson);
         }
 
@@ -70,10 +74,10 @@ namespace Unit.Helpers
         }
 
 
-        private async Task<string> ExecuteHttpRequestActualReturnString(HttpMethod method, string path, string content = null)
+        private async Task<string> ExecuteHttpRequestActualReturnString(HttpMethod method, string path, string content = null, IDictionary<string, string> headers = null)
         {
 
-            using var response = await ExecuteHttpRequestActual(method, path, content);
+            using var response = await ExecuteHttpRequestActual(method, path, content, headers);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var body = await response.Content.ReadAsStringAsync();
@@ -99,11 +103,7 @@ namespace Unit.Helpers
                 request.Content = requestContent;
             }
 
-            if (headers != null && headers.Any())
-            {
-                if (headers.ContainsKey("Authorization"))
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", headers["Authorization"]);
-            }
+            request.AddHeaders(headers);
 
             return await client.SendAsync(request);
         }

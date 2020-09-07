@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace PaymentGateway
         {
 
             ConfigAuth(services);
-
+            services.AddProblemDetails();
 
             services.AddMvc(options =>
             {
@@ -33,6 +34,7 @@ namespace PaymentGateway
                     {
                         options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                         options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                        options.SerializerSettings.Converters.Add(new IsoDateTimeConverter());
                     });
 
             services.AddApiVersioning();
@@ -50,9 +52,22 @@ namespace PaymentGateway
                 options.MapType<Version>(() => new OpenApiSchema { Type = "string" });
                 options.ExampleFilters();
                 options.EnableAnnotations();
+
+
+                options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Scheme = "bearer"
+                });
+
+
             })
             .AddSwaggerExamplesFromAssemblyOf<Startup>()
             .AddSwaggerGenNewtonsoftSupport();
+
+
 
 
         }
@@ -66,6 +81,8 @@ namespace PaymentGateway
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseProblemDetails();
 
             app.UseSwagger(c =>
             {
