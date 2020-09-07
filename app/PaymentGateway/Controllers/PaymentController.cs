@@ -68,7 +68,7 @@ namespace PaymentGateway.Controllers
 
             try
             {
-                var transaction = await paymentProcessorService.Process(paymentDetails);
+                var transaction = await paymentProcessorService.Process(paymentDetails); // should maybe return a different status code on WasSuccess = false? But which code?
                 return Ok(transaction);
             }
             catch (Exception e) when (e is PaymentDetailsInvalidException || e is CreditCardNumberInvalidException)
