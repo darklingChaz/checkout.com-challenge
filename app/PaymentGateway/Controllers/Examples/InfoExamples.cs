@@ -1,6 +1,7 @@
 
 
 
+using PaymentGateway.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace PaymentGateway.Controllers.Examples {

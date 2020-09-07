@@ -3,6 +3,7 @@
 
 
 using Microsoft.AspNetCore.Mvc;
+using PaymentGateway.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace PaymentGateway.Controllers {
@@ -21,7 +22,7 @@ namespace PaymentGateway.Controllers {
         [SwaggerResponse(200, "OK", typeof(ApplicationStatus))]
         [SwaggerResponse(500, "Internal Server Error", typeof(ProblemDetails))]
         public ApplicationStatus Info() {
-            return new ApplicationStatus();
+            return ApplicationStatus.Get();
         }
 
 

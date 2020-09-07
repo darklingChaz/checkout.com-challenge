@@ -38,12 +38,8 @@ namespace PaymentGateway.Controllers.ApiHelpers
                     .SelectMany(attr => attr.Versions)
                     .ToArray();
 
-                // No version? Put on all
-                if (versions.Length == 0 && maps.Length == 0)
-                    return true;
-
-                return versions.Any(v => $"{v.ToString()}" == version)
-                            && (!maps.Any() || maps.Any(v => $"{v.ToString()}" == version)); ;
+                return versions.Any(v => $"v{v.MajorVersion}" == version)
+                            && (!maps.Any() || maps.Any(v => $"v{v.MajorVersion}" == version)); ;
             });
 
 
@@ -53,7 +49,7 @@ namespace PaymentGateway.Controllers.ApiHelpers
         public static SwaggerGenOptions AddSwaggerDocs(this SwaggerGenOptions options)
         {
             foreach (var apiVersion in GetVersions())
-                options.SwaggerDoc($"{apiVersion}", new OpenApiInfo { Title = Constants.ApplicationName, Version = $"{apiVersion}" });
+                options.SwaggerDoc($"v{apiVersion.MajorVersion}", new OpenApiInfo { Title = Constants.ApplicationName, Version = $"{apiVersion.MajorVersion}" });
 
             return options;
         }
@@ -63,9 +59,8 @@ namespace PaymentGateway.Controllers.ApiHelpers
 
             app.UseSwaggerUI(c =>
             {
-
                 foreach (var apiVersion in GetVersions())
-                    c.SwaggerEndpoint($"/swagger/{apiVersion}/swagger.json", $"v{apiVersion}");
+                    c.SwaggerEndpoint($"/swagger/v{apiVersion.MajorVersion}/swagger.json", $"v{apiVersion.MajorVersion}");
 
             });
 
@@ -84,6 +79,8 @@ namespace PaymentGateway.Controllers.ApiHelpers
                                     .SelectMany(c => c.GetCustomAttributes(false))
                                     .OfType<ApiVersionAttribute>()
                                     .SelectMany(s => s.Versions)
+                                    .Union(new[] { Constants.DefaultApiVersion } )
+                                    .Distinct()
                                     .ToArray();
 
                 return DeclaredApiVersions;

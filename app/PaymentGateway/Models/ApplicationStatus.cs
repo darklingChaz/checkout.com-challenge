@@ -5,18 +5,21 @@
 using System;
 using System.Diagnostics;
 
-namespace PaymentGateway.Controllers {
+namespace PaymentGateway.Models {
 
 
 
     public class ApplicationStatus {
-        public string ApplicationName { get; }
-        public long TimeAliveInMilliseconds { get; }
 
-        public ApplicationStatus()
+        public string ApplicationName { get; set; }
+        public long TimeAliveInMilliseconds { get; set; }
+
+        public static ApplicationStatus Get()
         {
-            ApplicationName = Constants.ApplicationName;
-            TimeAliveInMilliseconds = (long)DateTime.UtcNow.Subtract(Process.GetCurrentProcess().StartTime.ToUniversalTime()).TotalMilliseconds;
+            return new ApplicationStatus {
+                ApplicationName = Constants.ApplicationName,
+                TimeAliveInMilliseconds = (long)DateTime.UtcNow.Subtract(Process.GetCurrentProcess().StartTime.ToUniversalTime()).TotalMilliseconds
+            };
         }
     }
 
