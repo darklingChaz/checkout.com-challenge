@@ -18,7 +18,6 @@ namespace PaymentGateway.Controllers
 
 
 
-    [RequireHttps]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/payment")]

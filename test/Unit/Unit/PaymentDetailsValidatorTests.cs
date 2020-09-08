@@ -6,6 +6,7 @@
 
 
 using System;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using PaymentGateway.Exceptions;
 using PaymentGateway.Models.Payment;
@@ -78,13 +79,13 @@ namespace Unit {
         [TestCase("12")]
         [TestCase("564434")]
         [TestCase("")]
+        [TestCase("XXX")]
         [TestCase(null)]
         public void InvalidCVV(string cvv) {
         
             // Given
             var details = PaymentDetailsGenerator.GetValidDetails();
             details.CVV = cvv;
-
 
             // When
             var ex = Assert.Throws<PaymentDetailsInvalidException>(() => validator.Validate(details));
