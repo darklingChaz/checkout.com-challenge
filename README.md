@@ -19,6 +19,13 @@ Second implementation.
 - Get Payment History
 
 
+# bonus-docker
+Containerized the Payment Gateway
+- docker build -t payment-gateway:v1
+- docker run -d --rm --name payment-gateway -p 3222:80 payment-gateway:v1
+- curl "http://localhost:3222/info"
+
+
 <br />
 <br />
 
