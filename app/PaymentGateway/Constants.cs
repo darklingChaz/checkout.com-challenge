@@ -14,7 +14,7 @@ namespace PaymentGateway
 
         public const string DefaultApiVersionAsString = "1.0";
         public static readonly ApiVersion DefaultApiVersion = new ApiVersion(1,0);
-        public static readonly TimeSpan DefaultTokenExpiry = TimeSpan.FromMinutes(10);
+        public static readonly TimeSpan DefaultTokenExpiry = TimeSpan.FromSeconds(5);
     }
 
 }

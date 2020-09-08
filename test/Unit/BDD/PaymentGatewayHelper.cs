@@ -40,6 +40,7 @@ namespace Unit.BDD
         {
 
             var host = Program.CreateHostBuilder(new string[0]);
+            host.UseEnvironment("Development");
             paymentGatewayHost = host.Build();
             await paymentGatewayHost.StartAsync();
         }

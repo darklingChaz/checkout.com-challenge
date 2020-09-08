@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 using BankingProxy;
 using BankingProxy.Models;
 
-namespace MockBank {
+namespace MockBank
+{
 
 
     public class MockBankImpl : IBankProxy
