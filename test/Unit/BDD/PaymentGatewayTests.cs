@@ -71,22 +71,6 @@ namespace Unit.BDD
 
         }
 
-        [Test]
-        public async Task ApplicationIsUp_WhenQueryHttp_Returns401()
-        {
-
-            // Given
-            var invalidCreds = new AuthCredentials("UNKNOWN", "NOT SET");
-
-            var url = $"http://localhost:5000{PaymentGatewayHelper.AuthTokenUrl}";
-
-            // When
-            var response = await paymentGatewayHelper.ExecuteHttpRequest(HttpMethod.Post, url);
-
-            // Then
-            Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
-
-        }
 
         [Test]
         public async Task InvalidCreds_TryGetAuthToken_Returns401()

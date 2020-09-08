@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using PaymentGateway.Exceptions;
 using PaymentGateway.Models.Payment;
 
@@ -41,6 +42,10 @@ namespace PaymentGateway.Validators
         {
             if(string.IsNullOrWhiteSpace(cvv) ||  cvv.Length != 3)
                 throw new PaymentDetailsInvalidException("CVV must be 3 digits in length");
+
+            if(Regex.IsMatch(cvv, "\\A[0-9]{3}\\z") == false)
+                throw new PaymentDetailsInvalidException("CVV must be 3 digits in length");
+
         }
 
         private void ValidateCurrency(string currencyCode)

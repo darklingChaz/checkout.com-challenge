@@ -84,13 +84,7 @@ namespace PaymentGateway
 
             app.UseProblemDetails();
 
-            app.UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swagger, httpReq) =>
-                {
-                    swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"https://localhost:5001" } }; // Should be via config
-                });
-            })
+            app.UseSwagger()
             .AddSwaggerUiEndpoints();
 
             app.UseRouting();
