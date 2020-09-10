@@ -39,9 +39,9 @@ namespace Unit.Helpers
             return await ExecuteHttpRequestActualReturnString(method, path);
         }
 
-        public async Task<T> ExecuteHttpRequest<T>(HttpMethod method, string path)
+        public async Task<T> ExecuteHttpRequest<T>(HttpMethod method, string path, IDictionary<string, string> headers = null)
         {
-            var responseJson = await ExecuteHttpRequestActualReturnString(method, path);
+            var responseJson = await ExecuteHttpRequestActualReturnString(method, path, null, headers);
             return JsonConvert.DeserializeObject<T>(responseJson);
         }
 

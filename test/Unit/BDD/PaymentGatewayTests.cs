@@ -143,6 +143,77 @@ namespace Unit.BDD
         }
 
 
+        [Test]
+        public async Task WithoutToken_CanNotGetHistory() {
+        
+            // Given
+            var transactionId = Guid.NewGuid().ToString();
+
+            // When
+            var response = await paymentGatewayHelper.ExecuteHttpRequest(HttpMethod.Get, PaymentGatewayHelper.HistoryUrl + $"/{transactionId}");
+
+            // Then
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        
+        }
+
+
+        [Test]
+        public async Task CanGetPaymentHistory() {
+
+            // Given
+            var authToken = await paymentGatewayHelper.GetAuthToken(validCreds[0]);
+            var paymentDetails = PaymentDetailsGenerator.GetValidDetails();
+            var transactionResponse = await paymentGatewayHelper.SubmitPayment(paymentDetails, authToken.Token);
+
+            // When
+            var history = await paymentGatewayHelper.GetPaymentHistory(transactionResponse.TransactionId, authToken.Token);
+
+            // Then
+            var masked = paymentDetails.ToMasked();
+            Assert.AreEqual(masked.CardNumber, history.PaymentDetails.CardNumber);
+            Assert.AreEqual(masked.ExpiryMonth, history.PaymentDetails.ExpiryMonth);
+            Assert.AreEqual(masked.ExpiryYear, history.PaymentDetails.ExpiryYear);
+            Assert.AreEqual(masked.CVV, history.PaymentDetails.CVV);
+            Assert.AreEqual(masked.Amount, history.PaymentDetails.Amount);
+            Assert.AreEqual(masked.Currency, history.PaymentDetails.Currency);
+
+            Assert.AreEqual(transactionResponse.TransactionId, history.TransactionResponse.TransactionId);
+            Assert.AreEqual(transactionResponse.StatusCode, history.TransactionResponse.StatusCode);
+            Assert.AreEqual(transactionResponse.WasSuccess, history.TransactionResponse.WasSuccess);
+
+        }
+
+
+
+
+        [Test]
+        public async Task CanSubmitManyRequests() {
+        
+            // Given
+            var authToken = await paymentGatewayHelper.GetAuthToken(validCreds[0]);
+
+            var transactionIds = new List<string>();
+            var submit = new Func<string,Task<string>>(async authToken => {
+                
+                var paymentDetails = PaymentDetailsGenerator.GetValidDetails();
+                var transactionResponse = await paymentGatewayHelper.SubmitPayment(paymentDetails, authToken);
+                return transactionResponse.TransactionId;
+                
+            } );
+
+            for (int i = 0; i < 40; i++)
+                transactionIds.Add(await submit(authToken.Token));
+
+            // Then
+            foreach (var id in transactionIds){
+                var hist = await paymentGatewayHelper.GetPaymentHistory(id, authToken.Token);
+                Assert.AreEqual(id, hist.TransactionResponse.TransactionId);
+                Console.WriteLine($"${hist.TransactionResponse.TransactionId} | ${hist.TransactionResponse.StatusCode}");
+            }
+        }
+
+
     }
 
 }

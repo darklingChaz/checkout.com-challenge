@@ -28,6 +28,8 @@ namespace Unit.BDD
         public const string AuthTokenUrl = "/api/v1/payment/authtoken";
         public const string PaymentUrl = "/api/v1/payment/submit";
 
+        public const string HistoryUrl = "/api/v1/payment/history";
+
 
 
         public PaymentGatewayHelper() : base("http://localhost:5000")
@@ -67,6 +69,12 @@ namespace Unit.BDD
         {
             var headers = new Dictionary<string,string>().WithHeader("Authorization", authToken);
             return await ExecuteHttpRequest<PaymentDetails, BankTransactionResponse>(HttpMethod.Post, PaymentUrl, paymentDetails, headers);
+        }
+
+        internal async Task<PaymentHistory> GetPaymentHistory(string transactionId, string authToken)
+        {
+            var headers = new Dictionary<string,string>().WithHeader("Authorization", authToken);
+            return await ExecuteHttpRequest<PaymentHistory>(HttpMethod.Get, HistoryUrl + $"/{transactionId}", headers);
         }
     }
 

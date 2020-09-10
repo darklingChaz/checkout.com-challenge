@@ -22,6 +22,7 @@ namespace PaymentGateway.Installers
             services.AddSingleton<IBankProxyTranslator, BankProxyTranslator>();
             services.AddSingleton<IBankProxy, MockBankImpl>();
 
+            services.AddSingleton<ITransactionCache, TransactionCache>();
             services.AddSingleton<IPaymentProcessorService, PaymentProcessorService>();
 
         }

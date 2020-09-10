@@ -4,11 +4,10 @@
 
 namespace BankingProxy.Models
 {
-    public enum TransactionStatus {
+    public class TransactionStatusCodes {
 
-        Unknown,
-        Success,
-        Failed
+        public const string Success = "01";
+        public const string Failed = "00";
 
     }
 

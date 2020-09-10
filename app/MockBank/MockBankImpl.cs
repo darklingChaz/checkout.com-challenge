@@ -16,7 +16,7 @@ namespace MockBank {
         public async Task<TransactionResponse> ActionPaymentAsync(CardDetails cardDetails, TransactionDetails transactionDetails)
         {
             
-            var response = new TransactionResponse { TransactionId = Guid.NewGuid().ToString(), Status = TransactionStatus.Success };
+            var response = new TransactionResponse { TransactionId = Guid.NewGuid().ToString(), StatusCode = TransactionStatusCodes.Success };
             return await Task.FromResult(response);
 
         }

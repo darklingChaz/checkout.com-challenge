@@ -44,7 +44,8 @@ namespace PaymentGateway.Translators {
             
             return new BankTransactionResponse {
                 TransactionId = transactionResponse.TransactionId,
-                WasSuccess = transactionResponse.Status == TransactionStatus.Success
+                StatusCode = transactionResponse.StatusCode,
+                WasSuccess = transactionResponse.StatusCode == TransactionStatusCodes.Success
             };
         }
 
