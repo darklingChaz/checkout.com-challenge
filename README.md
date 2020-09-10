@@ -14,6 +14,7 @@ Code base for the Checkout.com .NET Code Challenge 2.0
 <br />
 
 # ticket-2
+Second implementation.
 - Get Payment History
 
 <br />
@@ -30,8 +31,6 @@ Containerized the Payment Gateway
 - curl "http://localhost:3222/info"
 
 
-<br />
-<br />
 <br />
 <br />
 
