@@ -12,6 +12,7 @@ using Newtonsoft.Json.Serialization;
 using PaymentGateway.Auth;
 using PaymentGateway.Controllers.ApiHelpers;
 using PaymentGateway.Models.Auth;
+using PaymentGateway.Services;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace PaymentGateway
@@ -77,6 +78,10 @@ namespace PaymentGateway
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            Console.WriteLine($"\n\n ######    ENVIRONMENT = {env.EnvironmentName}   #####");
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -120,7 +125,9 @@ namespace PaymentGateway
                     new AuthCredentials("User2", "Pwd2"),
                 };
 
-                return new CredentialTokenManager(Constants.DefaultTokenExpiry, validCreds);
+                var appConfig = provider.GetRequiredService<IAppConfig>();
+
+                return new CredentialTokenManager(appConfig.TokenExpiry, validCreds);
 
             });
 
